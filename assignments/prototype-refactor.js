@@ -4,7 +4,8 @@ Prototype Refactor
 
 1. Copy and paste your code or the solution from yesterday
 
-2. Your goal is to refactor all of this code to use ES6 Classes. The console.log() statements should still return what is expected of them.
+2. Your goal is to refactor all of this code to use ES6 Classes. The console.log()
+   statements should still return what is expected of them.
 
 */
 
@@ -16,17 +17,21 @@ Prototype Refactor
   * dimensions (These represent the character's size in the video game)
   * destroy() // prototype method -> returns the string: 'Object was removed from the game.'
 */
-function GameObject(attr) {
-  this.createdAt = attr.createdAt;
-  this.dimensions = attr.dimensions;
-}
 
-GameObject.prototype.destroy = function() {
-  // this seems like questionable practice to just assume that
-  // any child objects will define a name attribute, but the
-  // expected response on line 149 implies that we need to do this:
-  return `${this.name} was removed from the game.`;
-};
+class GameObject {
+
+	constructor(attr) {
+		this.createdAt = attr.createdAt;
+		this.dimensions = attr.dimensions;
+	}
+
+	// this seems like questionable practice to just assume that
+	// any child objects will define a name attribute, but the
+	// expected response on line xxx implies that we need to do this:
+	destroy() {
+		return `${this.name} was removed from the game.`;
+	}
+}
 
 
 /*
@@ -37,17 +42,18 @@ GameObject.prototype.destroy = function() {
   * should inherit destroy() from GameObject's prototype
 */
 
-function CharacterStats(attr) {
-  GameObject.call(this, attr);
-  this.healthPoints = attr.healthPoints;
-  this.name = attr.name;
+class CharacterStats extends GameObject {
+
+	constructor(attr) {
+		super(attr);
+		this.healthPoints = attr.healthPoints;
+		this.name = attr.name;
+	}
+
+	takeDamage() {
+		return `${this.name} took damage.`;
+	}
 }
-
-CharacterStats.prototype = Object.create(GameObject.prototype);
-
-CharacterStats.prototype.takeDamage = function() {
-  return `${this.name} took damage.`;
-};
 
 
 /*
@@ -60,18 +66,18 @@ CharacterStats.prototype.takeDamage = function() {
   * should inherit takeDamage() from CharacterStats
 */
  
-function Humanoid(attr) {
-  CharacterStats.call(this, attr);
-  this.team = attr.team;
-  this.weapons = attr.weapons;
-  this.language = attr.language;
+class Humanoid extends CharacterStats {
+	constructor(attr) {
+		super(attr);
+		this.team = attr.team;
+		this.weapons = attr.weapons;
+		this.language = attr.language;
+	}
+
+	greet() {
+		return `${this.name} offers a greeting in ${this.language}.`;
+	}
 }
-
-Humanoid.prototype = Object.create(CharacterStats.prototype);
-
-Humanoid.prototype.greet = function() {
-  return `${this.name} offers a greeting in ${this.language}.`;
-};
 
 
 /*
@@ -150,3 +156,4 @@ Humanoid.prototype.greet = function() {
   // * Create Villain and Hero constructor functions that inherit from the Humanoid constructor function.  
   // * Give the Hero and Villains different methods that could be used to remove health points from objects which could result in destruction if health gets to 0 or drops below 0;
   // * Create two new objects, one a villain and one a hero and fight it out with methods!
+
